@@ -1,0 +1,78 @@
+//define syntax
+syntax = "proto3";
+
+
+//define seller structure
+message Seller {
+    int32 seller_id = 1;
+    string name = 2;
+}
+
+//define product structure
+message Product{
+    int32 item_id = 1
+    string name = 2;
+    float item_price = 3;
+    int32 quantity = 4;
+}
+
+
+//define services
+service SellerService{
+
+    //register seller
+    rpc RegisterSeller(RegisterSellerRequest) returns (RegisterSellerResponse);
+
+    //sell item
+    rpc SellItem(SellItemRequest) returns (SellItemResponse);
+
+    //update item
+    rpc UpdateItem(UpdateItemRequest) returns (UpdateItemResponse);
+
+    //delete item
+    rpc DeleteItem(DeleteItemRequest) returns (DeleteItemResponse);
+
+    //display items
+    rpc DisplaySellerItems(DisplaySellerItemsRequest) returns (DisplaySellerItemsResponse);
+}
+
+//define request and response messages
+message RegisterSellerRequest{
+    string message = 1;
+}
+
+message RegisterSellerResponse{
+    string message = 1;
+}
+
+message SellItemRequest{
+    string message = 1;
+}
+
+message SellItemResponse{
+    string message = 1;
+}
+
+message UpdateItemRequest{
+    string message = 1;
+}
+
+message UpdateItemResponse{
+    string message = 1;
+}
+
+message DeleteItemRequest{
+    string message = 1;
+}
+
+message DeleteItemResponse{
+    string message = 1;
+}
+
+message DisplaySellerItemsRequest{
+    string message = 1;
+}
+
+message DisplaySellerItemsResponse{
+    string message = 1;
+}
