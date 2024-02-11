@@ -8,12 +8,15 @@ message Seller {
     string name = 2;
 }
 
-//define product structure
-message Product{
+//define item structure
+message Item{
     int32 item_id = 1
     string name = 2;
     float item_price = 3;
     int32 quantity = 4;
+    string category = 5;
+    string description = 6;
+    string seller_address = 7;
 }
 
 
@@ -47,6 +50,8 @@ message RegisterSellerResponse{
 
 message SellItemRequest{
     string message = 1;
+    Item item = 2;
+    int32 seller_id = 3;
 }
 
 message SellItemResponse{
@@ -54,7 +59,11 @@ message SellItemResponse{
 }
 
 message UpdateItemRequest{
-    string message = 1;
+    int32 seller_id = 1;
+    int32 item_id = 2;
+    float new_item_price = 3;
+    int32 new_quantity = 4;
+    string new_seller_address = 5;
 }
 
 message UpdateItemResponse{
@@ -62,7 +71,9 @@ message UpdateItemResponse{
 }
 
 message DeleteItemRequest{
-    string message = 1;
+    int32 seller_id = 1;
+    string seller_address = 2;
+    int32 item_id = 3;
 }
 
 message DeleteItemResponse{
@@ -70,9 +81,9 @@ message DeleteItemResponse{
 }
 
 message DisplaySellerItemsRequest{
-    string message = 1;
+    int32 seller_id = 1;
 }
 
 message DisplaySellerItemsResponse{
-    string message = 1;
+    repeated Item items = 1;
 }
