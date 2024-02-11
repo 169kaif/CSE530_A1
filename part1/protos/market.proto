@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+//define notification
+message Notification {
+  string message = 1;
+}
+
+//define services
+service MarketService {
+
+  //notify client
+  rpc NotifyClient(Notification) returns (NotificationResponse);
+}
+
+//define request and response messages
+message NotificationResponse {
+  string message = 1;
+}
