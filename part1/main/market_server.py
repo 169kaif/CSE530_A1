@@ -33,7 +33,7 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
     def RegisterSeller(self, request, context):
         #extract uuid and add key to dictionary
         curr_seller_uuid = request.message
-        server_response=market_pb2.RegisterSellerResponse()
+        server_response=seller_pb2.RegisterSellerResponse()
         #validate user
         if (curr_seller_uuid in self.registered_sellers.keys()):
             server_response.message= "FAILURE: USER ALREADY EXISTS"
@@ -41,7 +41,6 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
             self.registered_sellers = []
             server_response.message= "SUCCESS: USER ADDED"
         return server_response
-
     
     def SellItem(self, request, context):
 
@@ -68,7 +67,7 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
                                   curr_item_description,
                                   curr_item_selleraddress)
         
-        server_response = market_pb2.SellItemResponse()
+        server_response = seller_pb2.SellItemResponse()
 
         #add products to product list if it doesn't already exist
         for product in self.products:
@@ -80,7 +79,51 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
         self.products.append(new_prod)
         server_response.message = "SUCCESS, ITEM ADDED SUCCESSFULLY"
         return server_response
+    
+    def UpdateItem(self, request, context):
 
+        #retrieve info from the update item request
+        seller_uuid = request.message #this is the seller uuid that the product originally has
+        req_item_id = request.item_id
+        new_item_price = request.new_item_price
+        new_item_quantity = request.new_quantity
+
+        #new seller uuid not needed but too lazy to change and recompile the proto files
+
+        server_response = seller_pb2.UpdateItemResponse()
+
+        #search for item in the products list, validate seller credentials and update
+        for item in self.products:
+            if (item.item_id == req_item_id and item.seller_address == seller_uuid):
+                item.item_price = new_item_price
+                item.quantity = new_item_quantity
+                server_response.message = "SUCCESS"
+                return server_response
+        
+        #failed either because no item match found or invalid credentials
+        server_response.message = "FAILURE"
+        return server_response
+    
+    def DeleteItem(self, request, context):
+
+        #retrieve info from the delete item request
+        req_item_id = request.item_id
+        seller_uuid = request.seller_address
+
+        server_response = seller_pb2.DeleteItemResponse()
+
+        #search for item in the products list, validate credentials and delete
+        for item in self.products:
+            if (item.item_id == req_item_id and item.seller_address == seller_uuid):
+                self.products.remove(item)
+                server_response.message = f"DELETED ITEM W/ ITEM ID:{req_item_id} SUCCESSFULLY"
+                return server_response
+            
+        #failure to delete the requested item either because item not found in the products list or credentials not verified
+        server_response.message = "FAILURE"
+        return server_response
+    
+    
 
     
     def SearchItem(self, request,context):
