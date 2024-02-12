@@ -1,5 +1,8 @@
 syntax = "proto3";
 
+import "buyer.proto";
+import "seller.proto";
+
 //define notification
 message Notification {
   string message = 1;
@@ -7,6 +10,18 @@ message Notification {
 
 //define services
 service MarketService {
+  // Buyer service methods
+  rpc SearchItem(buyer.SearchItemRequest) returns (buyer.SearchItemResponse);
+  rpc BuyItem(buyer.BuyItemRequest) returns (buyer.BuyItemResponse);
+  rpc AddToWishList(buyer.AddToWishListRequest) returns (buyer.AddToWishListResponse);
+  rpc RateItem(buyer.RateItemRequest) returns (buyer.RateItemResponse);
+
+  // Seller service methods
+  rpc RegisterSeller(seller.RegisterSellerRequest) returns (seller.RegisterSellerResponse);
+  rpc SellItem(seller.SellItemRequest) returns (seller.SellItemResponse);
+  rpc UpdateItem(seller.UpdateItemRequest) returns (seller.UpdateItemResponse);
+  rpc DeleteItem(seller.DeleteItemRequest) returns (seller.DeleteItemResponse);
+  rpc DisplaySellerItems(seller.DisplaySellerItemsRequest) returns (seller.DisplaySellerItemsResponse);
 
   //notify client
   rpc NotifyClient(Notification) returns (NotificationResponse);
