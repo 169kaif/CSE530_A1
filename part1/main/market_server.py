@@ -14,33 +14,33 @@ import market_pb2
 import market_pb2_grpc
 
 class ProductDetails:
-    def __init__(self, name, item_price, quantity, category, description, seller_address):
+    def __init__(self, name,item_id, item_price, quantity, category, description, seller_address):
         self.name = name
+        self.item_id = item_id
         self.item_price = item_price
         self.quantity = quantity
         self.category = category
         self.description = description
         self.seller_address = seller_address
 
-        
-
 class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
     """ Add methods to implement functionality of the services required by the seller"""
 
     def __init__(self):
         self.registered_sellers = {}
-        self.products={}#product_id to ProductDetails
+        self.products=[]
 
     def RegisterSeller(self, request, context):
         #extract uuid and add key to dictionary
         curr_seller_uuid = request.message
-
+        server_response=market_pb2.RegisterSellerResponse()
         #validate user
         if (curr_seller_uuid in self.registered_sellers.keys()):
-            return "FAILURE: USER ALREADY EXISTS"
+            server_response.message= "FAILURE: USER ALREADY EXISTS"
         else:
             self.registered_sellers = []
-            return "SUCCESS: USER ADDED"
+            server_response.message= "SUCCESS: USER ADDED"
+        return server_response
 
     
     def SellItem(self, request, context):
@@ -59,8 +59,35 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
 
         #retrieve uuid
         curr_seller_uuid = request.message
+
+        new_prod = ProductDetails(curr_item_name,
+                                  curr_item_id, 
+                                  curr_item_price,
+                                  curr_item_quantity,
+                                  curr_item_category,
+                                  curr_item_description,
+                                  curr_item_selleraddress)
+        
+        server_response = market_pb2.SellItemResponse()
+
+        #add products to product list if it doesn't already exist
+        for product in self.products:
+            if (product.item_id == curr_item_id): #product already exists, return failure
+                server_response.message = "FAILURE, ITEM ALREADY EXISTS"
+                return server_response
+            
+        #product doesn't exist
+        self.products.append(new_prod)
+        server_response.message = "SUCCESS, ITEM ADDED SUCCESSFULLY"
+        return server_response
+
+
     
     def SearchItem(self, request,context):
+        item_name=request.item_name
+        item_category=request.category_name
+        
+        
     
     def BuyItem(self, request, context):
 
