@@ -14,14 +14,22 @@ import market_pb2
 import market_pb2_grpc
 
 class ProductDetails:
-    
+    def __init__(self, name, item_price, quantity, category, description, seller_address):
+        self.name = name
+        self.item_price = item_price
+        self.quantity = quantity
+        self.category = category
+        self.description = description
+        self.seller_address = seller_address
+
+        
 
 class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
     """ Add methods to implement functionality of the services required by the seller"""
 
     def __init__(self):
         self.registered_sellers = {}
-        self.
+        self.products={}#product_id to ProductDetails
 
     def RegisterSeller(self, request, context):
         #extract uuid and add key to dictionary
