@@ -14,13 +14,14 @@ import market_pb2
 import market_pb2_grpc
 
 class ProductDetails:
-    def __init__(self, name,item_id, item_price, quantity, category, description, seller_address):
+    def __init__(self, name,item_id, item_price, quantity, category, description, rating, seller_address):
         self.name = name
         self.item_id = item_id
         self.item_price = item_price
         self.quantity = quantity
         self.category = category
         self.description = description
+        self.rating = rating
         self.seller_address = seller_address
 
 class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
@@ -65,6 +66,7 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
                                   curr_item_quantity,
                                   curr_item_category,
                                   curr_item_description,
+                                  -1,
                                   curr_item_selleraddress)
         
         server_response = seller_pb2.SellItemResponse()
@@ -123,17 +125,77 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
         server_response.message = "FAILURE"
         return server_response
     
+    def DisplaySellerItemsResponse(self, request, context):
+        #retrieve uuid of the seller
+        seller_uuid = request.seller_id
+        user_search_response=[]
+        for i in self.products:
+            if (i.seller_address == seller_uuid):
+                item=seller_pb2.Item()
+                item.name=i.name
+                item.category=i.category
+                item.item_price=i.item_price
+                item.quantity=i.quantity
+                item.description=i.description
+                item.seller_address=i.seller_address
+                item.item_id=i.item_id
+                item.rating = i.rating
+                user_search_response.append(item)
+                
+        response=buyer_pb2.SearchItemResponse()
+        response.items.extend(user_search_response)
+        return response
     
-
-    
+   
     def SearchItem(self, request,context):
         item_name=request.item_name
         item_category=request.category_name
+        user_search_response=[]
+        for i in self.products:
+            if ((i.category==item_category) or item_category=="ANY") and i.name==item_name:
+                item=seller_pb2.Item()
+                item.name=i.name
+                item.category=i.category
+                item.item_price=i.item_price
+                item.quantity=i.quantity
+                item.description=i.description
+                item.seller_address=i.seller_address
+                item.item_id=i.item_id
+                item.rating = i.rating
+                user_search_response.append(item)
+        response=buyer_pb2.SearchItemResponse()
+        response.items.extend(user_search_response)
+        return response
         
-        
-    
     def BuyItem(self, request, context):
+        item_id=request.item_id
+        item_quantity=request.item_quantity
+        flag =False
+
+        for i in self.products:
+            if item_id==i.item_id and item_quantity>=i.quantity and i.quantity>0:
+                i.quantity-=item_quantity
+                flag=True
+                break
+        response=buyer_pb2.BuyItemReponse()
+        if(not flag):
+            response.status="Failure"
+        else:
+            response.status="Success"
+        return response
 
     def AddToWishList(self, request, context):
+        
+        return None
 
     def RateItem(self, request, context):
+        item_name=request.item_id
+        item_rating=request.rating
+        server_response = buyer_pb2.RateItemResponse()
+        for i in self.products:
+            if (i.item_id==item_name):
+                i.rating=item_rating
+                server_response.status=f"UPDATED RATING OF ITEM W/ ITEM ID:{item_name} SUCCESSFULLY"
+                return server_response
+        server_response.status = "FAILURE"
+        return server_response
