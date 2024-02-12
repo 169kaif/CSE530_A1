@@ -13,17 +13,19 @@ import buyer_pb2_grpc
 import market_pb2
 import market_pb2_grpc
 
+class ProductDetails:
+    
 
-
-class SellerServiceServicer(seller_pb2_grpc.SellerServiceServicer):
+class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
     """ Add methods to implement functionality of the services required by the seller"""
 
     def __init__(self):
         self.registered_sellers = {}
+        self.
 
     def RegisterSeller(self, request, context):
         #extract uuid and add key to dictionary
-        curr_seller_uuid = int(request.message)
+        curr_seller_uuid = request.message
 
         #validate user
         if (curr_seller_uuid in self.registered_sellers.keys()):
@@ -49,4 +51,11 @@ class SellerServiceServicer(seller_pb2_grpc.SellerServiceServicer):
 
         #retrieve uuid
         curr_seller_uuid = request.message
-        
+    
+    def SearchItem(self, request,context):
+    
+    def BuyItem(self, request, context):
+
+    def AddToWishList(self, request, context):
+
+    def RateItem(self, request, context):
