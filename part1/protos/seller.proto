@@ -1,6 +1,7 @@
 //define syntax
 syntax = "proto3";
 
+package seller;
 
 //define seller structure
 message Seller {

@@ -1,16 +1,9 @@
 //define syntax
 syntax = "proto3";
 
-//define item structure
-message Item{
-    int32 item_id = 1;
-    string name = 2;
-    float item_price = 3;
-    int32 quantity = 4;
-    string category = 5;
-    string description = 6;
-    string seller_address = 7;
-}
+package buyer;
+
+import "seller.proto";
 
 //define services
 service BuyerService{
@@ -35,7 +28,7 @@ message SearchItemRequest{
 }
 
 message SearchItemResponse{
-    repeated Item items = 1;
+    repeated seller.Item items = 1;
 }
 
 message BuyItemRequest{
