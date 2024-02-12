@@ -18,6 +18,7 @@ message Item{
     string category = 5;
     string description = 6;
     string seller_address = 7;
+    float rating = 8;
 }
 
 
