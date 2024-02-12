@@ -37,7 +37,7 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
     """ Add methods to implement functionality of the services required by the seller"""
 
     def __init__(self):
-        self.registered_sellers = {}
+        self.registered_sellers = []
         self.products=[]
 
     def RegisterSeller(self, request, context):
@@ -48,8 +48,8 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         if (curr_seller_uuid in self.registered_sellers.keys()):
             server_response.message= "FAILURE: USER ALREADY EXISTS"
         else:
-            self.registered_sellers = []
-            server_response.message= "SUCCESS: USER ADDED"
+            self.registered_sellers.append(curr_seller_uuid)
+            server_response.message= "SUCCESS: USER ADDED w/ UUID " + curr_seller_uuid
         return server_response
     
     def SellItem(self, request, context):
@@ -63,11 +63,11 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         curr_item_description = request.item.description
         curr_item_selleraddress = request.item.seller_address
 
-        #retrieve seller id
-        curr_seller_id = request.seller_id
+        server_response = all_pb2.SellItemResponse()
 
-        #retrieve uuid
-        curr_seller_uuid = request.message
+        if (curr_item_selleraddress not in self.registered_sellers):
+            server_response.message = "FAILURE, USER NOT REGISTERED"
+            return server_response
 
         new_prod = ProductDetails(curr_item_name,
                                   curr_item_id, 
@@ -78,7 +78,6 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
                                   -1,
                                   curr_item_selleraddress)
         
-        server_response = all_pb2.SellItemResponse()
 
         #add products to product list if it doesn't already exist
         for product in self.products:
@@ -88,6 +87,11 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
             
         #product doesn't exist
         self.products.append(new_prod)
+
+        #debug
+        print(self.registered_sellers)
+        print(self.products)
+
         server_response.message = "SUCCESS, ITEM ADDED SUCCESSFULLY"
         return server_response
     
@@ -109,7 +113,16 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
                 item.item_price = new_item_price
                 item.quantity = new_item_quantity
                 server_response.message = "SUCCESS"
+
+                #debug
+                print(self.registered_sellers)
+                print(self.products)
+
                 return server_response
+            
+        #debug
+        print(self.registered_sellers)
+        print(self.products)
         
         #failed either because no item match found or invalid credentials
         server_response.message = "FAILURE"
@@ -128,7 +141,15 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
             if (item.item_id == req_item_id and item.seller_address == seller_uuid):
                 self.products.remove(item)
                 server_response.message = f"DELETED ITEM W/ ITEM ID:{req_item_id} SUCCESSFULLY"
+
+                #debug
+                print(self.registered_sellers)
+                print(self.products)
                 return server_response
+            
+        #debug
+        print(self.registered_sellers)
+        print(self.products)
             
         #failure to delete the requested item either because item not found in the products list or credentials not verified
         server_response.message = "FAILURE"
