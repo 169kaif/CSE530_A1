@@ -1,3 +1,8 @@
+from concurrent import futures
+import logging
+import math
+import time
+
 #import grpc
 import grpc
 
@@ -34,7 +39,7 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
     def RegisterSeller(self, request, context):
         #extract uuid and add key to dictionary
         curr_seller_uuid = request.message
-        server_response=seller_pb2.RegisterSellerResponse()
+        server_response=market_pb2.RegisterSellerResponse()
         #validate user
         if (curr_seller_uuid in self.registered_sellers.keys()):
             server_response.message= "FAILURE: USER ALREADY EXISTS"
@@ -69,7 +74,7 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
                                   -1,
                                   curr_item_selleraddress)
         
-        server_response = seller_pb2.SellItemResponse()
+        server_response = market_pb2.SellItemResponse()
 
         #add products to product list if it doesn't already exist
         for product in self.products:
@@ -92,7 +97,7 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
 
         #new seller uuid not needed but too lazy to change and recompile the proto files
 
-        server_response = seller_pb2.UpdateItemResponse()
+        server_response = market_pb2.UpdateItemResponse()
 
         #search for item in the products list, validate seller credentials and update
         for item in self.products:
@@ -112,7 +117,7 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
         req_item_id = request.item_id
         seller_uuid = request.seller_address
 
-        server_response = seller_pb2.DeleteItemResponse()
+        server_response = market_pb2.DeleteItemResponse()
 
         #search for item in the products list, validate credentials and delete
         for item in self.products:
@@ -142,7 +147,7 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
                 item.rating = i.rating
                 user_search_response.append(item)
                 
-        response=buyer_pb2.SearchItemResponse()
+        response=market_pb2.SearchItemResponse()
         response.items.extend(user_search_response)
         return response
     
@@ -163,7 +168,7 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
                 item.item_id=i.item_id
                 item.rating = i.rating
                 user_search_response.append(item)
-        response=buyer_pb2.SearchItemResponse()
+        response=market_pb2.SearchItemResponse()
         response.items.extend(user_search_response)
         return response
         
@@ -177,7 +182,7 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
                 i.quantity-=item_quantity
                 flag=True
                 break
-        response=buyer_pb2.BuyItemReponse()
+        response=market_pb2.BuyItemReponse()
         if(not flag):
             response.status="Failure"
         else:
@@ -191,7 +196,7 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
     def RateItem(self, request, context):
         item_name=request.item_id
         item_rating=request.rating
-        server_response = buyer_pb2.RateItemResponse()
+        server_response = market_pb2.RateItemResponse()
         for i in self.products:
             if (i.item_id==item_name):
                 i.rating=item_rating
@@ -199,3 +204,16 @@ class MarketServiceServicer(market_pb2_grpc.MarketServiceServicer):
                 return server_response
         server_response.status = "FAILURE"
         return server_response
+    
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    market_pb2_grpc.add_MarketServiceServicer_to_server(
+        MarketServiceServicer(), server
+    )
+    server.add_insecure_port("[::]:50051")
+    server.start()
+    server.wait_for_termination()
+
+if __name__ == "__main__":
+    logging.basicConfig()
+    serve()
