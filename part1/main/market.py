@@ -73,6 +73,8 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
             self.registered_sellers.append(curr_seller_uuid)
             
             #add details of notif server of seller
+            print(str(curr_seller_uuid)+'added as seller')
+            print("-"*30)
             self.notifier.store_address(curr_seller_uuid, seller_notif_server_ip, seller_notif_server_port)
             server_response.message= "SUCCESS: USER ADDED w/ UUID " + curr_seller_uuid
         return server_response
@@ -88,7 +90,8 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         curr_item_description = request.item.description
         curr_item_selleraddress = request.item.seller_address
         server_response = all_pb2.SellItemResponse()
-
+        print("Sell Item"+" request from "+str(curr_item_selleraddress))
+        print("-"*30)
         if (curr_item_selleraddress not in self.registered_sellers):
             server_response.message = "FAILURE, USER NOT REGISTERED"
             return server_response
@@ -124,7 +127,8 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         new_item_quantity = request.new_quantity
 
         #new seller uuid not needed but too lazy to change and recompile the proto files
-
+        print("Update ITEM"+str(req_item_id)+" request from "+str(some_id))
+        print("-"*30)
         server_response = all_pb2.UpdateItemResponse()
 
         #search for item in the products list, validate seller credentials and update
@@ -138,7 +142,7 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
                 #issue notification to people that have wishlisted the product
                 for buyer in self.notifier.uuid_map:
                     if (item.item_id in self.notifier.uuid_map[buyer]):
-                        notif_message = f"Notification: {item.name} w/ id {item.item_id} has now been updated"
+                        notif_message = f"Notification: {item.name} w/ id {item.item_id} has now been updated\n"+"The Following Item has been updated:\n"+"Item ID:"+str(item.name)+",PRICE:"+str(item.price)+", Category:"+str(item.category)+"\n"+"Description:"+str(item.description)+"\n"+"Quantity Remaining:"+str(item.quantity)+"\n"+"Rating:"+str(item.rating)+",Seller:"+str(item.seller_address)
                         self.notifier.run(buyer, notif_message)
 
                 return server_response
@@ -152,7 +156,8 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         #retrieve info from the delete item request
         req_item_id = request.item_id
         seller_uuid = request.seller_address
-
+        print("Delete ITEM"+str(req_item_id)+"  request from "+str(seller_uuid))
+        print("-"*30)
         server_response = all_pb2.DeleteItemResponse()
 
         #search for item in the products list, validate credentials and delete
@@ -170,7 +175,8 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
     def DisplaySellerItems(self, request, context):
         #retrieve uuid of the seller
         seller_uuid = request.seller_id
-        print("Display Item Request from seller:",seller_uuid)
+        print("Display Items Request from seller:",seller_uuid)
+        print("-"*30)
         response=all_pb2.DisplaySellerItemsResponse()
 
         for i in self.products:
@@ -212,9 +218,9 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
     def SearchItem(self, request,context):
         item_name=request.item_name
         item_category=request.category_name
-
+        print("Search request for item:"+str(item_name)+", Category:"+str(item_category))
+        print("-"*30)
         response = all_pb2.SearchItemResponse()
-
         for i in self.products:
             if ((i.category==item_category) or item_category=="ANY") and (i.name==item_name or item_name==""):
                 item=all_pb2.Item()
@@ -233,12 +239,14 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
     def BuyItem(self, request, context):
         item_id=request.item_id
         item_quantity=request.item_quantity
+        buyeruuid=request.buyer_uuid
         flag =False
 
         seller_uuid = -1
         bought_item_name = ""
         product_quantity_bought = -1
-
+        print("Buy Request "+str(item_quantity)+"of "+str(item_id)+" from "+str(buyeruuid))
+        print("-"*30)
         for i in self.products:
             if item_id==i.item_id and item_quantity<=i.quantity and i.quantity>0:
                 i.quantity-=item_quantity
@@ -269,6 +277,9 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         #store in the wishlist dict (key = buyer_uuid, value = wishlist)
         self.notifier.store_mapping(user_uuid_wishlist, wishlisted_item_id)
         response = all_pb2.AddToWishListResponse()
+        print("Wishlist request of ITEM"+str(wishlisted_item_id)+" from "+str(user_uuid_wishlist))
+        print("-"*30)
+
         response.status = f"ITEM ADDED TO WISHLIST of {user_uuid_wishlist} SUCCESSFULLY"
         return response
 
@@ -279,6 +290,8 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         for i in self.products:
             if (i.item_id==item_name):
                 i.rating=item_rating
+                print(request.seller_uuid+" rated ITEM"+str(item_name)+" with "+item_rating+" stars.")
+                print("-"*30)
                 server_response.status=f"UPDATED RATING OF ITEM W/ ITEM ID:{item_name} SUCCESSFULLY"
                 return server_response
         server_response.status = "FAILURE"

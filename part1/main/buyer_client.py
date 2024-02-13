@@ -45,7 +45,7 @@ def run():
             elif rpc_call == "2":
                 item_id = int(input("Enter the item id to buy: "))
                 quantity = int(input("Enter the quantity to buy: "))
-                buy_request = all_pb2.BuyItemRequest(item_id=item_id, item_quantity=quantity)
+                buy_request = all_pb2.BuyItemRequest(item_id=item_id, item_quantity=quantity,buyer_uuid=buyerr_uuid)
                 buy_reply = stub.BuyItem(buy_request)
                 print(buy_reply.status)
             elif rpc_call == "3":
@@ -56,7 +56,7 @@ def run():
             elif rpc_call == "4":
                 item_id = int(input("Enter the item id to rate: "))
                 rating = int(input("Enter the rating: "))
-                rate_item_request = all_pb2.RateItemRequest(item_id=item_id, rating=rating)
+                rate_item_request = all_pb2.RateItemRequest(item_id=item_id, rating=rating,seller_uuid=buyerr_uuid)
                 rate_item_reply = stub.RateItem(rate_item_request)
                 print(rate_item_reply.status)
             elif rpc_call == "5":
