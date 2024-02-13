@@ -27,9 +27,6 @@ def updateitem():
 def deleteItem():
     Item_ID=int(input("Enter Item ID: "))
     return Item_ID
-
-
-
     
 def Run():
     print("Hello Welcome")
