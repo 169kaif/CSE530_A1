@@ -2,10 +2,6 @@ from unicodedata import category
 from uuid import uuid1
 import grpc
 import grpc_tools
-import seller_pb2
-import seller_pb2_grpc
-import buyer_pb2
-import buyer_pb2_grpc
 import all_pb2
 import all_pb2_grpc
 

@@ -1,8 +1,4 @@
 import grpc
-import buyer_pb2
-import buyer_pb2_grpc
-import seller_pb2
-import seller_pb2_grpc
 import all_pb2
 import all_pb2_grpc
 
