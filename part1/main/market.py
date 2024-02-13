@@ -73,7 +73,7 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
             self.registered_sellers.append(curr_seller_uuid)
             
             #add details of notif server of seller
-            print(str(curr_seller_uuid)+'added as seller')
+            print(str(curr_seller_uuid)+' added as seller')
             print("-"*30)
             self.notifier.store_address(curr_seller_uuid, seller_notif_server_ip, seller_notif_server_port)
             server_response.message= "SUCCESS: USER ADDED w/ UUID " + curr_seller_uuid
@@ -142,7 +142,7 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
                 #issue notification to people that have wishlisted the product
                 for buyer in self.notifier.uuid_map:
                     if (item.item_id in self.notifier.uuid_map[buyer]):
-                        notif_message = f"Notification: {item.name} w/ id {item.item_id} has now been updated\n"+"The Following Item has been updated:\n"+"Item ID:"+str(item.name)+",PRICE:"+str(item.price)+", Category:"+str(item.category)+"\n"+"Description:"+str(item.description)+"\n"+"Quantity Remaining:"+str(item.quantity)+"\n"+"Rating:"+str(item.rating)+",Seller:"+str(item.seller_address)
+                        notif_message = f"Notification: {item.name} w/ id {item.item_id} has now been updated\n"+"The Following Item has been updated:\n"+"Item Name:"+str(item.name)+",PRICE:"+str(item.item_price)+", Category:"+str(item.category)+"\n"+"Description:"+str(item.description)+"\n"+"Quantity Remaining:"+str(item.quantity)+"\n"+"Rating:"+str(item.rating)+",Seller:"+str(item.seller_address)
                         self.notifier.run(buyer, notif_message)
 
                 return server_response
