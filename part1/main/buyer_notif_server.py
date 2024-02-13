@@ -32,7 +32,7 @@ def serve():
     all_pb2_grpc.add_AllServicesServicer_to_server(
         AllServicesServicer(), server
     )
-    server.add_insecure_port("[::]:50052")
+    server.add_insecure_port("[::]:50053")
     server.start()
     server.wait_for_termination()
 
