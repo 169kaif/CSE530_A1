@@ -1,13 +1,21 @@
 import grpc
 import all_pb2
 import all_pb2_grpc
-
+import uuid
 
 
 def run():
     with grpc.insecure_channel('localhost:50051') as channel:
+        stub = all_pb2_grpc.AllServicesStub(channel)
+        print("Registering Buyer!!!!")
+        buyerr_uuid=str(uuid.uuid1())
+        buyer_server_ip="localhost"
+        buyer_server_port="12345"
+        buyer_request=all_pb2.RegisterBuyerRequest(message=buyerr_uuid,notif_server_ip=buyer_server_ip,notif_server_port=buyer_server_port)
+        buyer_response=stub.RegisterBuyer(buyer_request)
+        print(buyer_response.message)
+
         while True:
-            stub = all_pb2_grpc.AllServicesStub(channel)
             print("1. Search_Item")
             print("2. Buy_Item")
             print("3. Add_To_WishList")
@@ -42,7 +50,7 @@ def run():
                 print(buy_reply.status)
             elif rpc_call == "3":
                 item_id = int(input("Enter the item id to add to wishlist: "))
-                add_to_wishlist_request = all_pb2.AddToWishListRequest(item_id=item_id)
+                add_to_wishlist_request = all_pb2.AddToWishListRequest(item_id=item_id,buyer_uuid=buyerr_uuid)
                 add_to_wishlist_reply = stub.AddToWishList(add_to_wishlist_request)
                 print(add_to_wishlist_reply.status)
             elif rpc_call == "4":

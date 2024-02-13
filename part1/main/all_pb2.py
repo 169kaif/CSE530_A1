@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tall.proto\x12\x03sss\"\x9a\x01\n\x04Item\x12\x0f\n\x07item_id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x12\n\nitem_price\x18\x03 \x01(\x02\x12\x10\n\x08quantity\x18\x04 \x01(\x05\x12\x10\n\x08\x63\x61tegory\x18\x05 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x06 \x01(\t\x12\x16\n\x0eseller_address\x18\x07 \x01(\t\x12\x0e\n\x06rating\x18\x08 \x01(\x02\")\n\x06Seller\x12\x11\n\tseller_id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\"\x1f\n\x0cNotification\x12\x0f\n\x07message\x18\x01 \x01(\t\"\'\n\x14NotificationResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"(\n\x15RegisterSellerRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\")\n\x16RegisterSellerResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"N\n\x0fSellItemRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x17\n\x04item\x18\x02 \x01(\x0b\x32\t.sss.Item\x12\x11\n\tseller_id\x18\x03 \x01(\t\"#\n\x10SellItemResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x81\x01\n\x11UpdateItemRequest\x12\x11\n\tseller_id\x18\x01 \x01(\t\x12\x0f\n\x07item_id\x18\x02 \x01(\x05\x12\x16\n\x0enew_item_price\x18\x03 \x01(\x02\x12\x14\n\x0cnew_quantity\x18\x04 \x01(\x05\x12\x1a\n\x12new_seller_address\x18\x05 \x01(\t\"%\n\x12UpdateItemResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"O\n\x11\x44\x65leteItemRequest\x12\x11\n\tseller_id\x18\x01 \x01(\t\x12\x16\n\x0eseller_address\x18\x02 \x01(\t\x12\x0f\n\x07item_id\x18\x03 \x01(\x05\"%\n\x12\x44\x65leteItemResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\".\n\x19\x44isplaySellerItemsRequest\x12\x11\n\tseller_id\x18\x01 \x01(\t\"6\n\x1a\x44isplaySellerItemsResponse\x12\x18\n\x05items\x18\x01 \x03(\x0b\x32\t.sss.Item\"=\n\x11SearchItemRequest\x12\x11\n\titem_name\x18\x01 \x01(\t\x12\x15\n\rcategory_name\x18\x02 \x01(\t\".\n\x12SearchItemResponse\x12\x18\n\x05items\x18\x01 \x03(\x0b\x32\t.sss.Item\"8\n\x0e\x42uyItemRequest\x12\x0f\n\x07item_id\x18\x01 \x01(\x05\x12\x15\n\ritem_quantity\x18\x02 \x01(\x05\"!\n\x0f\x42uyItemResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"\'\n\x14\x41\x64\x64ToWishListRequest\x12\x0f\n\x07item_id\x18\x01 \x01(\x05\"\'\n\x15\x41\x64\x64ToWishListResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"2\n\x0fRateItemRequest\x12\x0f\n\x07item_id\x18\x01 \x01(\x05\x12\x0e\n\x06rating\x18\x02 \x01(\x05\"\"\n\x10RateItemResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2\x9a\x05\n\x0b\x41llServices\x12=\n\nSearchItem\x12\x16.sss.SearchItemRequest\x1a\x17.sss.SearchItemResponse\x12\x34\n\x07\x42uyItem\x12\x13.sss.BuyItemRequest\x1a\x14.sss.BuyItemResponse\x12\x46\n\rAddToWishList\x12\x19.sss.AddToWishListRequest\x1a\x1a.sss.AddToWishListResponse\x12\x37\n\x08RateItem\x12\x14.sss.RateItemRequest\x1a\x15.sss.RateItemResponse\x12I\n\x0eRegisterSeller\x12\x1a.sss.RegisterSellerRequest\x1a\x1b.sss.RegisterSellerResponse\x12\x37\n\x08SellItem\x12\x14.sss.SellItemRequest\x1a\x15.sss.SellItemResponse\x12=\n\nUpdateItem\x12\x16.sss.UpdateItemRequest\x1a\x17.sss.UpdateItemResponse\x12=\n\nDeleteItem\x12\x16.sss.DeleteItemRequest\x1a\x17.sss.DeleteItemResponse\x12U\n\x12\x44isplaySellerItems\x12\x1e.sss.DisplaySellerItemsRequest\x1a\x1f.sss.DisplaySellerItemsResponse\x12<\n\x0cNotifyClient\x12\x11.sss.Notification\x1a\x19.sss.NotificationResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tall.proto\x12\x03sss\"\x9a\x01\n\x04Item\x12\x0f\n\x07item_id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x12\n\nitem_price\x18\x03 \x01(\x02\x12\x10\n\x08quantity\x18\x04 \x01(\x05\x12\x10\n\x08\x63\x61tegory\x18\x05 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x06 \x01(\t\x12\x16\n\x0eseller_address\x18\x07 \x01(\t\x12\x0e\n\x06rating\x18\x08 \x01(\x02\")\n\x06Seller\x12\x11\n\tseller_id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\"\x1f\n\x0cNotification\x12\x0f\n\x07message\x18\x01 \x01(\t\"\'\n\x14NotificationResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"[\n\x14RegisterBuyerRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x17\n\x0fnotif_server_ip\x18\x02 \x01(\t\x12\x19\n\x11notif_server_port\x18\x03 \x01(\t\"(\n\x15RegisterBuyerResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"\\\n\x15RegisterSellerRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x17\n\x0fnotif_server_ip\x18\x02 \x01(\t\x12\x19\n\x11notif_server_port\x18\x03 \x01(\t\")\n\x16RegisterSellerResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"N\n\x0fSellItemRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x17\n\x04item\x18\x02 \x01(\x0b\x32\t.sss.Item\x12\x11\n\tseller_id\x18\x03 \x01(\t\"#\n\x10SellItemResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x81\x01\n\x11UpdateItemRequest\x12\x11\n\tseller_id\x18\x01 \x01(\t\x12\x0f\n\x07item_id\x18\x02 \x01(\x05\x12\x16\n\x0enew_item_price\x18\x03 \x01(\x02\x12\x14\n\x0cnew_quantity\x18\x04 \x01(\x05\x12\x1a\n\x12new_seller_address\x18\x05 \x01(\t\"%\n\x12UpdateItemResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"O\n\x11\x44\x65leteItemRequest\x12\x11\n\tseller_id\x18\x01 \x01(\t\x12\x16\n\x0eseller_address\x18\x02 \x01(\t\x12\x0f\n\x07item_id\x18\x03 \x01(\x05\"%\n\x12\x44\x65leteItemResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\".\n\x19\x44isplaySellerItemsRequest\x12\x11\n\tseller_id\x18\x01 \x01(\t\"6\n\x1a\x44isplaySellerItemsResponse\x12\x18\n\x05items\x18\x01 \x03(\x0b\x32\t.sss.Item\"=\n\x11SearchItemRequest\x12\x11\n\titem_name\x18\x01 \x01(\t\x12\x15\n\rcategory_name\x18\x02 \x01(\t\".\n\x12SearchItemResponse\x12\x18\n\x05items\x18\x01 \x03(\x0b\x32\t.sss.Item\"8\n\x0e\x42uyItemRequest\x12\x0f\n\x07item_id\x18\x01 \x01(\x05\x12\x15\n\ritem_quantity\x18\x02 \x01(\x05\"!\n\x0f\x42uyItemResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\";\n\x14\x41\x64\x64ToWishListRequest\x12\x0f\n\x07item_id\x18\x01 \x01(\x05\x12\x12\n\nbuyer_uuid\x18\x05 \x01(\t\"\'\n\x15\x41\x64\x64ToWishListResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"2\n\x0fRateItemRequest\x12\x0f\n\x07item_id\x18\x01 \x01(\x05\x12\x0e\n\x06rating\x18\x02 \x01(\x05\"\"\n\x10RateItemResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2\xe2\x05\n\x0b\x41llServices\x12\x46\n\rRegisterBuyer\x12\x19.sss.RegisterBuyerRequest\x1a\x1a.sss.RegisterBuyerResponse\x12=\n\nSearchItem\x12\x16.sss.SearchItemRequest\x1a\x17.sss.SearchItemResponse\x12\x34\n\x07\x42uyItem\x12\x13.sss.BuyItemRequest\x1a\x14.sss.BuyItemResponse\x12\x46\n\rAddToWishList\x12\x19.sss.AddToWishListRequest\x1a\x1a.sss.AddToWishListResponse\x12\x37\n\x08RateItem\x12\x14.sss.RateItemRequest\x1a\x15.sss.RateItemResponse\x12I\n\x0eRegisterSeller\x12\x1a.sss.RegisterSellerRequest\x1a\x1b.sss.RegisterSellerResponse\x12\x37\n\x08SellItem\x12\x14.sss.SellItemRequest\x1a\x15.sss.SellItemResponse\x12=\n\nUpdateItem\x12\x16.sss.UpdateItemRequest\x1a\x17.sss.UpdateItemResponse\x12=\n\nDeleteItem\x12\x16.sss.DeleteItemRequest\x1a\x17.sss.DeleteItemResponse\x12U\n\x12\x44isplaySellerItems\x12\x1e.sss.DisplaySellerItemsRequest\x1a\x1f.sss.DisplaySellerItemsResponse\x12<\n\x0cNotifyClient\x12\x11.sss.Notification\x1a\x19.sss.NotificationResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -29,42 +29,46 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_NOTIFICATION']._serialized_end=249
   _globals['_NOTIFICATIONRESPONSE']._serialized_start=251
   _globals['_NOTIFICATIONRESPONSE']._serialized_end=290
-  _globals['_REGISTERSELLERREQUEST']._serialized_start=292
-  _globals['_REGISTERSELLERREQUEST']._serialized_end=332
-  _globals['_REGISTERSELLERRESPONSE']._serialized_start=334
-  _globals['_REGISTERSELLERRESPONSE']._serialized_end=375
-  _globals['_SELLITEMREQUEST']._serialized_start=377
-  _globals['_SELLITEMREQUEST']._serialized_end=455
-  _globals['_SELLITEMRESPONSE']._serialized_start=457
-  _globals['_SELLITEMRESPONSE']._serialized_end=492
-  _globals['_UPDATEITEMREQUEST']._serialized_start=495
-  _globals['_UPDATEITEMREQUEST']._serialized_end=624
-  _globals['_UPDATEITEMRESPONSE']._serialized_start=626
-  _globals['_UPDATEITEMRESPONSE']._serialized_end=663
-  _globals['_DELETEITEMREQUEST']._serialized_start=665
-  _globals['_DELETEITEMREQUEST']._serialized_end=744
-  _globals['_DELETEITEMRESPONSE']._serialized_start=746
-  _globals['_DELETEITEMRESPONSE']._serialized_end=783
-  _globals['_DISPLAYSELLERITEMSREQUEST']._serialized_start=785
-  _globals['_DISPLAYSELLERITEMSREQUEST']._serialized_end=831
-  _globals['_DISPLAYSELLERITEMSRESPONSE']._serialized_start=833
-  _globals['_DISPLAYSELLERITEMSRESPONSE']._serialized_end=887
-  _globals['_SEARCHITEMREQUEST']._serialized_start=889
-  _globals['_SEARCHITEMREQUEST']._serialized_end=950
-  _globals['_SEARCHITEMRESPONSE']._serialized_start=952
-  _globals['_SEARCHITEMRESPONSE']._serialized_end=998
-  _globals['_BUYITEMREQUEST']._serialized_start=1000
-  _globals['_BUYITEMREQUEST']._serialized_end=1056
-  _globals['_BUYITEMRESPONSE']._serialized_start=1058
-  _globals['_BUYITEMRESPONSE']._serialized_end=1091
-  _globals['_ADDTOWISHLISTREQUEST']._serialized_start=1093
-  _globals['_ADDTOWISHLISTREQUEST']._serialized_end=1132
-  _globals['_ADDTOWISHLISTRESPONSE']._serialized_start=1134
-  _globals['_ADDTOWISHLISTRESPONSE']._serialized_end=1173
-  _globals['_RATEITEMREQUEST']._serialized_start=1175
-  _globals['_RATEITEMREQUEST']._serialized_end=1225
-  _globals['_RATEITEMRESPONSE']._serialized_start=1227
-  _globals['_RATEITEMRESPONSE']._serialized_end=1261
-  _globals['_ALLSERVICES']._serialized_start=1264
-  _globals['_ALLSERVICES']._serialized_end=1930
+  _globals['_REGISTERBUYERREQUEST']._serialized_start=292
+  _globals['_REGISTERBUYERREQUEST']._serialized_end=383
+  _globals['_REGISTERBUYERRESPONSE']._serialized_start=385
+  _globals['_REGISTERBUYERRESPONSE']._serialized_end=425
+  _globals['_REGISTERSELLERREQUEST']._serialized_start=427
+  _globals['_REGISTERSELLERREQUEST']._serialized_end=519
+  _globals['_REGISTERSELLERRESPONSE']._serialized_start=521
+  _globals['_REGISTERSELLERRESPONSE']._serialized_end=562
+  _globals['_SELLITEMREQUEST']._serialized_start=564
+  _globals['_SELLITEMREQUEST']._serialized_end=642
+  _globals['_SELLITEMRESPONSE']._serialized_start=644
+  _globals['_SELLITEMRESPONSE']._serialized_end=679
+  _globals['_UPDATEITEMREQUEST']._serialized_start=682
+  _globals['_UPDATEITEMREQUEST']._serialized_end=811
+  _globals['_UPDATEITEMRESPONSE']._serialized_start=813
+  _globals['_UPDATEITEMRESPONSE']._serialized_end=850
+  _globals['_DELETEITEMREQUEST']._serialized_start=852
+  _globals['_DELETEITEMREQUEST']._serialized_end=931
+  _globals['_DELETEITEMRESPONSE']._serialized_start=933
+  _globals['_DELETEITEMRESPONSE']._serialized_end=970
+  _globals['_DISPLAYSELLERITEMSREQUEST']._serialized_start=972
+  _globals['_DISPLAYSELLERITEMSREQUEST']._serialized_end=1018
+  _globals['_DISPLAYSELLERITEMSRESPONSE']._serialized_start=1020
+  _globals['_DISPLAYSELLERITEMSRESPONSE']._serialized_end=1074
+  _globals['_SEARCHITEMREQUEST']._serialized_start=1076
+  _globals['_SEARCHITEMREQUEST']._serialized_end=1137
+  _globals['_SEARCHITEMRESPONSE']._serialized_start=1139
+  _globals['_SEARCHITEMRESPONSE']._serialized_end=1185
+  _globals['_BUYITEMREQUEST']._serialized_start=1187
+  _globals['_BUYITEMREQUEST']._serialized_end=1243
+  _globals['_BUYITEMRESPONSE']._serialized_start=1245
+  _globals['_BUYITEMRESPONSE']._serialized_end=1278
+  _globals['_ADDTOWISHLISTREQUEST']._serialized_start=1280
+  _globals['_ADDTOWISHLISTREQUEST']._serialized_end=1339
+  _globals['_ADDTOWISHLISTRESPONSE']._serialized_start=1341
+  _globals['_ADDTOWISHLISTRESPONSE']._serialized_end=1380
+  _globals['_RATEITEMREQUEST']._serialized_start=1382
+  _globals['_RATEITEMREQUEST']._serialized_end=1432
+  _globals['_RATEITEMRESPONSE']._serialized_start=1434
+  _globals['_RATEITEMRESPONSE']._serialized_end=1468
+  _globals['_ALLSERVICES']._serialized_start=1471
+  _globals['_ALLSERVICES']._serialized_end=2209
 # @@protoc_insertion_point(module_scope)

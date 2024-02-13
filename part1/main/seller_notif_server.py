@@ -17,10 +17,10 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         self.notif = ""
 
     def NotifyClient(self, request, context):
-        self.notif = request.Notification.message
+        self.notif = request.message
 
         #print the notification
-        print(self.notification)
+        print(self.notif)
 
         server_response=all_pb2.NotificationResponse()
         server_response.message = "SUCCESS"
@@ -37,5 +37,6 @@ def serve():
     server.wait_for_termination()
 
 if __name__ == "__main__":
+    print("------SELLER NOTIFICATION SERVER STARTED------")
     logging.basicConfig()
     serve()

@@ -15,6 +15,11 @@ class AllServicesStub(object):
         Args:
             channel: A grpc.Channel.
         """
+        self.RegisterBuyer = channel.unary_unary(
+                '/sss.AllServices/RegisterBuyer',
+                request_serializer=all__pb2.RegisterBuyerRequest.SerializeToString,
+                response_deserializer=all__pb2.RegisterBuyerResponse.FromString,
+                )
         self.SearchItem = channel.unary_unary(
                 '/sss.AllServices/SearchItem',
                 request_serializer=all__pb2.SearchItemRequest.SerializeToString,
@@ -70,6 +75,13 @@ class AllServicesStub(object):
 class AllServicesServicer(object):
     """define buyer services
     """
+
+    def RegisterBuyer(self, request, context):
+        """register buyer
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
     def SearchItem(self, request, context):
         """search item
@@ -144,6 +156,11 @@ class AllServicesServicer(object):
 
 def add_AllServicesServicer_to_server(servicer, server):
     rpc_method_handlers = {
+            'RegisterBuyer': grpc.unary_unary_rpc_method_handler(
+                    servicer.RegisterBuyer,
+                    request_deserializer=all__pb2.RegisterBuyerRequest.FromString,
+                    response_serializer=all__pb2.RegisterBuyerResponse.SerializeToString,
+            ),
             'SearchItem': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchItem,
                     request_deserializer=all__pb2.SearchItemRequest.FromString,
@@ -204,6 +221,23 @@ def add_AllServicesServicer_to_server(servicer, server):
 class AllServices(object):
     """define buyer services
     """
+
+    @staticmethod
+    def RegisterBuyer(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/sss.AllServices/RegisterBuyer',
+            all__pb2.RegisterBuyerRequest.SerializeToString,
+            all__pb2.RegisterBuyerResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def SearchItem(request,

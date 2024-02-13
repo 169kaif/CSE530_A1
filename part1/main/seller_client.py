@@ -37,8 +37,11 @@ def Run():
     with grpc.insecure_channel('localhost:50051') as channel:
         stub=all_pb2_grpc.AllServicesStub(channel)
         seller_id=str(uuid1())
-        seller_request=all_pb2.RegisterSellerRequest(message=seller_id)
+        local_ip="localhost"
+        port_no="50052"
+        seller_request=all_pb2.RegisterSellerRequest(message=seller_id,notif_server_ip=local_ip,notif_server_port=port_no)
         seller_response=stub.RegisterSeller(seller_request)
+
         print(seller_response.message)
         while(True):
             display_requests()

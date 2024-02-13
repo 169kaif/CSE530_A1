@@ -17,10 +17,10 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         self.notif = ""
 
     def NotifyClient(self, request, context):
-        self.notif = request.Notification.message
+        self.notif = request.message
 
         #print the notification
-        print(self.notification)
+        print(self.notif)
 
         server_response=all_pb2.NotificationResponse()
         server_response.message = "SUCCESS"
@@ -32,10 +32,11 @@ def serve():
     all_pb2_grpc.add_AllServicesServicer_to_server(
         AllServicesServicer(), server
     )
-    server.add_insecure_port("[::]:50053")
+    server.add_insecure_port("[::]:12345")
     server.start()
     server.wait_for_termination()
 
 if __name__ == "__main__":
     logging.basicConfig()
+    print("------BUYER NOTIFICATION SERVER STARTED------")
     serve()

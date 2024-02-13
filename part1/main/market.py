@@ -10,6 +10,7 @@ import grpc
 import all_pb2
 import all_pb2_grpc
 
+"""Class to structure products"""
 class ProductDetails:
     def __init__(self, name,item_id, item_price, quantity, category, description, rating, seller_address):
         self.name = name
@@ -21,25 +22,67 @@ class ProductDetails:
         self.rating = rating
         self.seller_address = seller_address
 
+"""Class to send notifications to the clients"""
+class NotifClient():
+
+    def __init__(self):
+        self.seller_ip = -1
+        self.seller_port = -1
+        self.buyer_ip = -1
+        self.buyer_port = -1
+        self.uuid_map = dict()
+
+    def store_mapping(self, uuid, product):
+        if uuid not in self.uuid_map:
+            self.uuid_map[uuid]=[]
+        self.uuid_map[uuid].append(product)
+
+    """
+    set mode=0 -> seller_notif_server
+    set mode=1 -> buyer_notif_server
+    """
+    def run(self, notif, mode):
+
+        if (mode == 0): #seller_notif_server
+            comm_channel = str(self.seller_ip) + ":" + str(self.seller_port)
+        else:
+            comm_channel = str(self.buyer_ip) + ":" + str(self.buyer_port)
+        
+        #setting channel of communication after retrieving info from the stored mapping
+        with grpc.insecure_channel(comm_channel) as channel:
+            stub = all_pb2_grpc.AllServicesStub(channel)
+            messsage_info=notif
+            notification_mess=all_pb2.Notification(message=messsage_info)
+            notify_request=stub.NotifyClient(notification_mess)
+            print(notify_request.message)    
+
 class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
     """ Add methods to implement functionality of the services required by the seller"""
 
     def __init__(self):
         self.registered_sellers = []
         self.products=[]
+        self.registered_buyers = []
+        self.notifier = NotifClient()
 
     def RegisterSeller(self, request, context):
         #extract uuid and add key to dictionary
         curr_seller_uuid = request.message
         server_response=all_pb2.RegisterSellerResponse()
+
+        #extract seller_notif_server info 
+        if (self.notifier.seller_ip == -1):
+            self.notifier.seller_ip = request.notif_server_ip
+
+        if (self.notifier.seller_port == -1):
+            self.notifier.seller_port = request.notif_server_port
+
         #validate user
         if (curr_seller_uuid in self.registered_sellers):
             server_response.message= "FAILURE: USER ALREADY EXISTS"
         else:
             self.registered_sellers.append(curr_seller_uuid)
             server_response.message= "SUCCESS: USER ADDED w/ UUID " + curr_seller_uuid
-        print(self.products)
-        print(self.registered_sellers)
         return server_response
     
     def SellItem(self, request, context):
@@ -99,6 +142,13 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
                 item.quantity = new_item_quantity
                 server_response.message = "SUCCESS"
 
+
+                #issue notification to people that have wishlisted the product
+                for buyer in self.notifier.uuid_map:
+                    if (item.item_id in self.notifier.uuid_map[buyer]):
+                        notif_message = f"Notification for buyer {buyer}: {item.name} w/ id {item.item_id} has now been updated"
+                        self.notifier.run(notif_message,1)
+
                 return server_response
         
         #failed either because no item match found or invalid credentials
@@ -146,7 +196,26 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         
         return response
     
-    response=all_pb2.SearchItemResponse()
+    def RegisterBuyer(self, request, context):
+        #extract uuid and add key to dictionary
+        curr_buyer_uuid = request.message
+        server_response=all_pb2.RegisterBuyerResponse()
+
+        #extract seller_notif_server info 
+        if (self.notifier.buyer_ip == -1):
+            self.notifier.buyer_ip = request.notif_server_ip
+
+        if (self.notifier.seller_port == -1):
+            self.notifier.buyer_port = request.notif_server_port
+
+        #validate user
+        if (curr_buyer_uuid in self.registered_buyers):
+            server_response.message= "FAILURE: USER ALREADY EXISTS"
+        else:
+            self.registered_buyers.append(curr_buyer_uuid)
+            server_response.message= "SUCCESS: USER ADDED w/ UUID " + curr_buyer_uuid
+        return server_response
+
    
     def SearchItem(self, request,context):
         item_name=request.item_name
@@ -174,21 +243,42 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         item_quantity=request.item_quantity
         flag =False
 
+        seller_uuid = -1
+        bought_item_name = ""
+        product_quantity_bought = -1
+
         for i in self.products:
             if item_id==i.item_id and item_quantity<=i.quantity and i.quantity>0:
                 i.quantity-=item_quantity
                 flag=True
+
+                #storing info for notif message
+                seller_uuid = i.seller_address
+                product_quantity_bought = item_quantity
+                bought_item_name = i.name
                 break
+
+        notif_message = f"SELLER {seller_uuid} has sold {product_quantity_bought} units of {bought_item_name}"
+
         response=all_pb2.BuyItemResponse()
         if(not flag):
             response.status="Failure"
         else:
+            self.notifier.run(notif_message, 0)
             response.status="Success"
         return response
 
     def AddToWishList(self, request, context):
-        
-        return None
+
+        #retrieve buyer info and id of the item to wishlist
+        wishlisted_item_id = request.item_id
+        user_uuid_wishlist = request.buyer_uuid
+
+        #store in the wishlist dict (key = buyer_uuid, value = wishlist)
+        self.notifier.store_mapping(user_uuid_wishlist, wishlisted_item_id)
+        response = all_pb2.AddToWishListResponse()
+        response.status = f"ITEM ADDED TO WISHLIST of {user_uuid_wishlist} SUCCESSFULLY"
+        return response
 
     def RateItem(self, request, context):
         item_name=request.item_id
@@ -200,7 +290,8 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
                 server_response.status=f"UPDATED RATING OF ITEM W/ ITEM ID:{item_name} SUCCESSFULLY"
                 return server_response
         server_response.status = "FAILURE"
-        return server_response
+        return server_response    
+
     
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

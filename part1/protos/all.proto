@@ -6,6 +6,9 @@ package sss;
 //define buyer services
 service AllServices{
 
+    //register buyer
+    rpc RegisterBuyer(RegisterBuyerRequest) returns (RegisterBuyerResponse);
+
     //search item
     rpc SearchItem(SearchItemRequest) returns (SearchItemResponse);
 
@@ -66,8 +69,21 @@ message NotificationResponse {
 }
 
 //define request and response messages
+
+message RegisterBuyerRequest{
+    string message = 1;
+    string notif_server_ip = 2;
+    string notif_server_port = 3;
+}
+
+message RegisterBuyerResponse{
+    string message = 1;
+}
+
 message RegisterSellerRequest{
     string message = 1;
+    string notif_server_ip = 2;
+    string notif_server_port = 3;
 }
 
 message RegisterSellerResponse{
@@ -135,6 +151,7 @@ message BuyItemResponse{
 
 message AddToWishListRequest{
     int32 item_id = 1;
+    string buyer_uuid = 5;
 }
 
 message AddToWishListResponse{
