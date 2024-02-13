@@ -26,10 +26,7 @@ class ProductDetails:
 class NotifClient():
 
     def __init__(self):
-        self.seller_ip = -1
-        self.seller_port = -1
-        self.buyer_ip = -1
-        self.buyer_port = -1
+        self.address_map = dict()
         self.uuid_map = dict()
 
     def store_mapping(self, uuid, product):
@@ -37,16 +34,12 @@ class NotifClient():
             self.uuid_map[uuid]=[]
         self.uuid_map[uuid].append(product)
 
-    """
-    set mode=0 -> seller_notif_server
-    set mode=1 -> buyer_notif_server
-    """
-    def run(self, notif, mode):
+    def store_address(self, uuid, ip, port):
+        self.address_map[uuid] = (ip,port)
 
-        if (mode == 0): #seller_notif_server
-            comm_channel = str(self.seller_ip) + ":" + str(self.seller_port)
-        else:
-            comm_channel = str(self.buyer_ip) + ":" + str(self.buyer_port)
+    def run(self, uuid, notif):
+
+        comm_channel = str(self.address_map[uuid][0]) + ":" + str(self.address_map[uuid][1])
         
         #setting channel of communication after retrieving info from the stored mapping
         with grpc.insecure_channel(comm_channel) as channel:
@@ -69,19 +62,18 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         #extract uuid and add key to dictionary
         curr_seller_uuid = request.message
         server_response=all_pb2.RegisterSellerResponse()
-
-        #extract seller_notif_server info 
-        if (self.notifier.seller_ip == -1):
-            self.notifier.seller_ip = request.notif_server_ip
-
-        if (self.notifier.seller_port == -1):
-            self.notifier.seller_port = request.notif_server_port
+        seller_notif_server_ip = request.notif_server_ip
+        seller_notif_server_port = request.notif_server_port
 
         #validate user
         if (curr_seller_uuid in self.registered_sellers):
             server_response.message= "FAILURE: USER ALREADY EXISTS"
         else:
+            #add to registered user
             self.registered_sellers.append(curr_seller_uuid)
+            
+            #add details of notif server of seller
+            self.notifier.store_address(curr_seller_uuid, seller_notif_server_ip, seller_notif_server_port)
             server_response.message= "SUCCESS: USER ADDED w/ UUID " + curr_seller_uuid
         return server_response
     
@@ -146,8 +138,8 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
                 #issue notification to people that have wishlisted the product
                 for buyer in self.notifier.uuid_map:
                     if (item.item_id in self.notifier.uuid_map[buyer]):
-                        notif_message = f"Notification for buyer {buyer}: {item.name} w/ id {item.item_id} has now been updated"
-                        self.notifier.run(notif_message,1)
+                        notif_message = f"Notification: {item.name} w/ id {item.item_id} has now been updated"
+                        self.notifier.run(buyer, notif_message)
 
                 return server_response
         
@@ -200,19 +192,19 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         #extract uuid and add key to dictionary
         curr_buyer_uuid = request.message
         server_response=all_pb2.RegisterBuyerResponse()
-
-        #extract seller_notif_server info 
-        if (self.notifier.buyer_ip == -1):
-            self.notifier.buyer_ip = request.notif_server_ip
-
-        if (self.notifier.buyer_port == -1):
-            self.notifier.buyer_port = request.notif_server_port
+        buyer_notif_server_ip = request.notif_server_ip
+        buyer_notif_server_port = request.notif_server_port
 
         #validate user
         if (curr_buyer_uuid in self.registered_buyers):
             server_response.message= "FAILURE: USER ALREADY EXISTS"
         else:
+            #add user to registered buyers
             self.registered_buyers.append(curr_buyer_uuid)
+
+            #add notif server ip and port info
+            self.notifier.store_address(curr_buyer_uuid, buyer_notif_server_ip, buyer_notif_server_port)
+
             server_response.message= "SUCCESS: USER ADDED w/ UUID " + curr_buyer_uuid
         return server_response
 
@@ -258,13 +250,13 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
                 bought_item_name = i.name
                 break
 
-        notif_message = f"SELLER {seller_uuid} has sold {product_quantity_bought} units of {bought_item_name}"
+        notif_message = f"Sold {product_quantity_bought} units of {bought_item_name}"
 
         response=all_pb2.BuyItemResponse()
         if(not flag):
             response.status="Failure"
         else:
-            self.notifier.run(notif_message, 0)
+            self.notifier.run(seller_uuid, notif_message)
             response.status="Success"
         return response
 
