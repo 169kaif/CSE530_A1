@@ -290,7 +290,7 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         for i in self.products:
             if (i.item_id==item_name):
                 i.rating=item_rating
-                print(request.seller_uuid+" rated ITEM"+str(item_name)+" with "+item_rating+" stars.")
+                print(request.seller_uuid+" rated ITEM"+str(item_name)+" with "+str(item_rating)+" stars.")
                 print("-"*30)
                 server_response.status=f"UPDATED RATING OF ITEM W/ ITEM ID:{item_name} SUCCESSFULLY"
                 return server_response
