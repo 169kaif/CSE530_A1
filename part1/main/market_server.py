@@ -156,13 +156,15 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         server_response.message = "FAILURE"
         return server_response
     
-    def DisplaySellerItemsResponse(self, request, context):
+    def DisplaySellerItems(self, request, context):
         #retrieve uuid of the seller
         seller_uuid = request.seller_id
-        user_search_response=[]
+
+        response=all_pb2.DisplaySellerItemsResponse()
+
         for i in self.products:
             if (i.seller_address == seller_uuid):
-                item=seller_pb2.Item()
+                item=all_pb2.Item()
                 item.name=i.name
                 item.category=i.category
                 item.item_price=i.item_price
@@ -171,20 +173,21 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
                 item.seller_address=i.seller_address
                 item.item_id=i.item_id
                 item.rating = i.rating
-                user_search_response.append(item)
-                
-        response=all_pb2.DisplaySellerItemResponse()
-        response.items.extend(user_search_response)
+                response.items.append(item)
+        
         return response
     
+    response=all_pb2.SearchItemResponse()
    
     def SearchItem(self, request,context):
         item_name=request.item_name
         item_category=request.category_name
-        user_search_response=[]
+
+        response = all_pb2.SearchItemResponse()
+
         for i in self.products:
-            if ((i.category==item_category) or item_category=="ANY") and i.name==item_name:
-                item=seller_pb2.Item()
+            if ((i.category==item_category) or item_category=="ANY") and (i.name==item_name or item_name==""):
+                item=all_pb2.Item()
                 item.name=i.name
                 item.category=i.category
                 item.item_price=i.item_price
@@ -193,9 +196,8 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
                 item.seller_address=i.seller_address
                 item.item_id=i.item_id
                 item.rating = i.rating
-                user_search_response.append(item)
-        response=all_pb2.SearchItemResponse()
-        response.items.extend(user_search_response)
+                response.items.append(item)
+    
         return response
         
     def BuyItem(self, request, context):
@@ -204,7 +206,7 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         flag =False
 
         for i in self.products:
-            if item_id==i.item_id and item_quantity>=i.quantity and i.quantity>0:
+            if item_id==i.item_id and item_quantity<=i.quantity and i.quantity>0:
                 i.quantity-=item_quantity
                 flag=True
                 break
