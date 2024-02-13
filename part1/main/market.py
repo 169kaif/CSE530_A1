@@ -170,7 +170,7 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
     def DisplaySellerItems(self, request, context):
         #retrieve uuid of the seller
         seller_uuid = request.seller_id
-
+        print("Display Item Request from seller:",seller_uuid)
         response=all_pb2.DisplaySellerItemsResponse()
 
         for i in self.products:
