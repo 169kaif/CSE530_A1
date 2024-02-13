@@ -1,4 +1,5 @@
 from unicodedata import category
+from uuid import uuid1
 import grpc
 import grpc_tools
 import seller_pb2
@@ -36,21 +37,24 @@ def deleteItem():
     
 def Run():
     print("Hello Welcome")
-    print("Register yourself")
+    
     #connecting to the server(Market)
     #connection initiated
     #displaying the result
     with grpc.insecure_channel('localhost:50051') as channel:
         stub=all_pb2_grpc.AllServicesStub(channel)
-        seller_id="abc"
+        seller_id=str(uuid1())
+        seller_request=all_pb2.RegisterSellerRequest(message=seller_id)
+        seller_response=stub.RegisterSeller(seller_request)
+        print(seller_response.message)
         while(True):
             display_requests()
             rpc_input=int(input("Enter the request you want to use: "))
             if rpc_input==1:
                 
                 Item_ID,Item_name,Item_Price,quantity,category,description=sellitem()
-                sellerItem=all_pb2.Item(item_id=Item_ID,name=Item_name,item_price=Item_Price,quantity=quantity,category=category,description=description,seller_address="")
-                sellitem_request=all_pb2.SellItemRequest(message="",item=sellerItem,seller_id=seller_id)
+                sellerItem=all_pb2.Item(item_id=Item_ID,name=Item_name,item_price=Item_Price,quantity=quantity,category=category,description=description,seller_address=seller_id)
+                sellitem_request=all_pb2.SellItemRequest(message=seller_id,item=sellerItem,seller_id=seller_id)
                 sellitem_response=stub.SellItem(sellitem_request)
                 print(sellitem_response.message)
 
@@ -58,14 +62,14 @@ def Run():
 
             elif rpc_input==2:
                 Item_ID,Item_Price,quantity=updateitem()
-                updateitemm=all_pb2.UpdateItemRequest(seller_id=seller_id,item_id=Item_ID,new_item_price=Item_Price,new_quantity=quantity,new_seller_address="")
+                updateitemm=all_pb2.UpdateItemRequest(seller_id=seller_id,item_id=Item_ID,new_item_price=Item_Price,new_quantity=quantity,new_seller_address=seller_id)
                 updateitem_response=stub.UpdateItem(updateitemm)
                 print(updateitem_response.message)
                 
             elif rpc_input==3:
                 Item_ID=deleteItem()
-                deleteItem=all_pb2.DeleteItemRequesr(seller_id=seller_id,seller_address="",item_id=Item_ID)
-                deleteItem_response=stub.DeleteItem(deleteItem)
+                deleteItemm=all_pb2.DeleteItemRequest(seller_id=seller_id,seller_address=seller_id,item_id=Item_ID)
+                deleteItem_response=stub.DeleteItem(deleteItemm)
                 print(deleteItem_response.message)
             elif rpc_input==4:
                 show_item=all_pb2.DisplaySellerItemsRequest(seller_id=seller_id)

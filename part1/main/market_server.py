@@ -45,11 +45,13 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         curr_seller_uuid = request.message
         server_response=all_pb2.RegisterSellerResponse()
         #validate user
-        if (curr_seller_uuid in self.registered_sellers.keys()):
+        if (curr_seller_uuid in self.registered_sellers):
             server_response.message= "FAILURE: USER ALREADY EXISTS"
         else:
             self.registered_sellers.append(curr_seller_uuid)
             server_response.message= "SUCCESS: USER ADDED w/ UUID " + curr_seller_uuid
+        print(self.products)
+        print(self.registered_sellers)
         return server_response
     
     def SellItem(self, request, context):
@@ -62,7 +64,6 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         curr_item_category = request.item.category
         curr_item_description = request.item.description
         curr_item_selleraddress = request.item.seller_address
-
         server_response = all_pb2.SellItemResponse()
 
         if (curr_item_selleraddress not in self.registered_sellers):
@@ -98,7 +99,7 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
     def UpdateItem(self, request, context):
 
         #retrieve info from the update item request
-        seller_uuid = request.message #this is the seller uuid that the product originally has
+        some_id = request.seller_id #this is the seller uuid that the product originally has
         req_item_id = request.item_id
         new_item_price = request.new_item_price
         new_item_quantity = request.new_quantity
@@ -109,7 +110,7 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
 
         #search for item in the products list, validate seller credentials and update
         for item in self.products:
-            if (item.item_id == req_item_id and item.seller_address == seller_uuid):
+            if (item.item_id == req_item_id and item.seller_address == some_id):
                 item.item_price = new_item_price
                 item.quantity = new_item_quantity
                 server_response.message = "SUCCESS"
