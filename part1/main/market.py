@@ -205,7 +205,7 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         if (self.notifier.buyer_ip == -1):
             self.notifier.buyer_ip = request.notif_server_ip
 
-        if (self.notifier.seller_port == -1):
+        if (self.notifier.buyer_port == -1):
             self.notifier.buyer_port = request.notif_server_port
 
         #validate user
