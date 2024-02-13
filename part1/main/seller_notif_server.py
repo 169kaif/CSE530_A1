@@ -26,3 +26,16 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         server_response.message = "SUCCESS"
 
         return server_response
+    
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    all_pb2_grpc.add_AllServicesServicer_to_server(
+        AllServicesServicer(), server
+    )
+    server.add_insecure_port("[::]:50052")
+    server.start()
+    server.wait_for_termination()
+
+if __name__ == "__main__":
+    logging.basicConfig()
+    serve()
