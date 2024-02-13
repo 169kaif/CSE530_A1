@@ -161,6 +161,7 @@ message AddToWishListResponse{
 message RateItemRequest{
     int32 item_id = 1;
     int32 rating = 2;
+    string seller_uuid = 3;
 }
 
 message RateItemResponse{
