@@ -77,10 +77,6 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
         #product doesn't exist
         self.products.append(new_prod)
 
-        #debug
-        print(self.registered_sellers)
-        print(self.products)
-
         server_response.message = "SUCCESS, ITEM ADDED SUCCESSFULLY"
         return server_response
     
@@ -103,15 +99,7 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
                 item.quantity = new_item_quantity
                 server_response.message = "SUCCESS"
 
-                #debug
-                print(self.registered_sellers)
-                print(self.products)
-
                 return server_response
-            
-        #debug
-        print(self.registered_sellers)
-        print(self.products)
         
         #failed either because no item match found or invalid credentials
         server_response.message = "FAILURE"
@@ -131,14 +119,7 @@ class AllServicesServicer(all_pb2_grpc.AllServicesServicer):
                 self.products.remove(item)
                 server_response.message = f"DELETED ITEM W/ ITEM ID:{req_item_id} SUCCESSFULLY"
 
-                #debug
-                print(self.registered_sellers)
-                print(self.products)
                 return server_response
-            
-        #debug
-        print(self.registered_sellers)
-        print(self.products)
             
         #failure to delete the requested item either because item not found in the products list or credentials not verified
         server_response.message = "FAILURE"
