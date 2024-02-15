@@ -51,11 +51,11 @@ while True:
             hj=input("Enter choice")
             if(hj=='1'):
                 msg=input("Enter message to send: ")
-                msg="MSG "+msg
+                msg="MSG "+user_uuid+" "+msg
                 specific_socket[group_ip_port].send(msg.encode())
             elif(hj=='2'):
                 time_stamp=input("Enter time stamp or leave empty for all messages:")
-                grp_msg="QUERY "+time_stamp
+                grp_msg="QUERY "+user_uuid+" "+time_stamp
                 specific_socket[group_ip_port].send(grp_msg.encode())
 
                 msg_recv=specific_socket[group_ip_port].recv()

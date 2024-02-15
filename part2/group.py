@@ -23,19 +23,24 @@ def run(context,port_no):
         decoded_msg = msg[1].decode()
         strlist=decoded_msg.split()
         if strlist[0]=="MSG":
-            print(f"Message from {identity}")
+
+            user_uuid=strlist[1]
             #get time in HH:MM:SS
             now = datetime.now()
             current_time = now.strftime('%H:%M:%S')
+            print("Message sent from user "+user_uuid+" at "+current_time)
             if current_time not in messages:
                 messages[current_time]=[]
-            messages[current_time].append(" ".join(strlist[1:]))
+            messages[current_time].append(" ".join(strlist[2:]))
             response="Success"
             socket1.send_multipart([identity,response.encode()])
+            
         elif(strlist[0]=="QUERY"):
-            print(f"Query from {identity}")
+            user_uuid=strlist[1]
+
+            print("Query request from user "+user_uuid)
             response=""
-            if(len(strlist)==1):
+            if(len(strlist)==2):
                 for _time in sorted(messages.keys()):
                     response+=_time+": "+" ".join(messages[_time])+"\n"
             else :
@@ -44,16 +49,19 @@ def run(context,port_no):
                     if _time>=time_stamp:
                         response+=_time+": "+" ".join(messages[_time])+"\n"
                 if response==" ":
-                    response="No messages found"    
+                    response="No messages found"  
+           
             socket1.send_multipart([identity,response.encode()])
         elif strlist[0]=="JOIN":
             user_uuid=strlist[1]
             if user_uuid not in users:
                 users[user_uuid]=identity
+            print("User "+user_uuid+" joined")
         elif strlist[0]=="LEAVE":
             user_uuid=strlist[1]
             if user_uuid in users:
                 del users[user_uuid]
+            print("User "+user_uuid+" left")
 
 if __name__ == "__main__":
     context=zmq.Context()
