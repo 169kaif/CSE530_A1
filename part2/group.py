@@ -4,19 +4,18 @@ from datetime import datetime
 messages=dict()
 users=dict()
 
-def connect_msg_server(zmq_context):
+def connect_msg_server(zmq_context,port_no):
     print("Connecting to message server")
     msg_server_socket=context.socket(zmq.DEALER)
-    my_port=input("Enter your port not 5557:")
-    msg_server_socket.connect("tcp://127.0.0.1:"+my_port)
-    msg_server_port='REGISTER 127.0.0.1:5557'
+    msg_server_socket.connect("tcp://127.0.0.1:5558")
+    msg_server_port='REGISTER 127.0.0.1:'+port_no
     msg_server_socket.send(msg_server_port.encode())
     x=msg_server_socket.recv()
     print(x.decode())
 
-def run(context):
+def run(context,port_no):
     socket1 = context.socket(zmq.ROUTER)#socket for group 
-    socket1.bind("tcp://127.0.0.1:5557")
+    socket1.bind("tcp://127.0.0.1:"+port_no)
     while True:
         msg = socket1.recv_multipart()
         print(msg)
@@ -58,5 +57,6 @@ def run(context):
 
 if __name__ == "__main__":
     context=zmq.Context()
-    connect_msg_server(context)
-    run(context)
+    my_port=input("Enter your port not 5558:")
+    connect_msg_server(context,my_port)
+    run(context,my_port)

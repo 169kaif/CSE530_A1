@@ -81,5 +81,7 @@ while True:
             specific_socket[group_ip_port].send(grp_msg.encode())
             specific_socket[group_ip_port].close()
             del specific_socket[group_ip_port]
+    elif(choice=='4'):
+        break
     else:
         print("INVALID INPUT")
