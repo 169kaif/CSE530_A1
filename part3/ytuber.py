@@ -10,7 +10,7 @@ name = sys.argv[1]
 video_name = " ".join(sys.argv[2:])
 choice=1
 
-result = channel.queue_declare('dkdk', exclusive=False)
+result = channel.queue_declare(name, exclusive=False)
 queue_name = result.method.queue
 channel.exchange_declare(exchange='topic_updates', exchange_type='topic')
 channel.queue_bind(exchange='topic_updates', queue=queue_name, routing_key=name)

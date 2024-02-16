@@ -28,7 +28,7 @@ channel.queue_declare(queue='component2_queue')
 channel.queue_declare(queue='component3_queue')
 # Define an exchange
 channel.exchange_declare(exchange='direct_exchange', exchange_type='direct')
-result = channel.queue_declare('pavit', exclusive=False)
+result = channel.queue_declare(name, exclusive=False)
 queue_name = result.method.queue
 channel.exchange_declare(exchange='topic_updates', exchange_type='topic')
 channel.queue_bind(exchange='topic_updates', queue=queue_name, routing_key=name)
