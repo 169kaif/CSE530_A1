@@ -22,7 +22,7 @@ while True:
     print("3)disconnect from a group")
     print("4)exit")
 
-    choice=input("Enter choice")
+    choice=input("Enter choice: ")
 
     if(choice=='1'):
         specific_socket['msg_server'].send("get group info".encode())
@@ -32,7 +32,7 @@ while True:
 
 
     elif(choice=='2'):
-        group_ip_port=input("ENTER GROUP IP:PORT")
+        group_ip_port=input("ENTER GROUP IP:PORT: ")
 
         if group_ip_port not in specific_socket:
             specific_socket[group_ip_port]=context.socket(zmq.DEALER)
@@ -41,8 +41,6 @@ while True:
             #send uuid to group
             grp_msg= f"JOIN {user_uuid}"
             specific_socket[group_ip_port].send(grp_msg.encode())
-        else:
-            print("ALREADY CONNECTED TO GROUP")
 
         while True:
             print("1)send message to group")

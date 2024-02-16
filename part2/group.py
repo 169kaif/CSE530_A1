@@ -18,12 +18,9 @@ def run(context,port_no):
     socket1.bind("tcp://127.0.0.1:"+port_no)
     while True:
         msg = socket1.recv_multipart()
-        print(msg)
         identity = msg[0]
         decoded_msg = msg[1].decode()
         strlist=decoded_msg.split()
-        print(len(strlist))
-        print(strlist)
         if strlist[0]=="MSG":
             user_uuid=strlist[1]
             #get time in HH:MM:SS
@@ -33,7 +30,6 @@ def run(context,port_no):
             if current_time not in messages:
                 messages[current_time]=[]
             messages[current_time].append(" ".join(strlist[2:]))
-            print(strlist[2:])
             response="Success"
             socket1.send_multipart([identity,response.encode()])
         
@@ -44,7 +40,6 @@ def run(context,port_no):
             if(len(strlist)==2):
                 for _time in sorted(messages.keys()):
                     for msgs in messages[_time]:
-                        print(msgs)
                         response+=_time+": "+" "+msgs+"\n"
                         response+=" "
             else :
@@ -54,7 +49,6 @@ def run(context,port_no):
                     _timedt=datetime.strptime(_time,'%H:%M:%S')
                     if timestamp<=_timedt:
                         for msgs in messages[_time]:
-                            print(msgs)
                             response+=_time+": "+msgs+"\n"
             if response=="":
                     response="No messages found"  
