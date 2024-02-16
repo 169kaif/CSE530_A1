@@ -22,8 +22,9 @@ def run(context,port_no):
         identity = msg[0]
         decoded_msg = msg[1].decode()
         strlist=decoded_msg.split()
+        print(len(strlist))
+        print(strlist)
         if strlist[0]=="MSG":
-
             user_uuid=strlist[1]
             #get time in HH:MM:SS
             now = datetime.now()
@@ -32,25 +33,32 @@ def run(context,port_no):
             if current_time not in messages:
                 messages[current_time]=[]
             messages[current_time].append(" ".join(strlist[2:]))
+            print(strlist[2:])
             response="Success"
             socket1.send_multipart([identity,response.encode()])
-            
+        
         elif(strlist[0]=="QUERY"):
             user_uuid=strlist[1]
-
             print("Query request from user "+user_uuid)
             response=""
             if(len(strlist)==2):
                 for _time in sorted(messages.keys()):
-                    response+=_time+": "+" ".join(messages[_time])+"\n"
+                    for msgs in messages[_time]:
+                        print(msgs)
+                        response+=_time+": "+" "+msgs+"\n"
+                        response+=" "
             else :
-                time_stamp=strlist[1]
+                time_stamp=strlist[2]
+                timestamp=datetime.strptime(time_stamp,'%H:%M:%S')
                 for _time in sorted(messages.keys()):
-                    if _time>=time_stamp:
-                        response+=_time+": "+" ".join(messages[_time])+"\n"
-                if response==" ":
+                    _timedt=datetime.strptime(_time,'%H:%M:%S')
+                    if timestamp<=_timedt:
+                        for msgs in messages[_time]:
+                            print(msgs)
+                            response+=_time+": "+msgs+"\n"
+            if response=="":
                     response="No messages found"  
-           
+            print(response)
             socket1.send_multipart([identity,response.encode()])
         elif strlist[0]=="JOIN":
             user_uuid=strlist[1]

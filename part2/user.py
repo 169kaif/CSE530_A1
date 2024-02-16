@@ -48,23 +48,23 @@ while True:
             print("1)send message to group")
             print("2)Get past messages")
             print("3)Exit menu")
-            hj=input("Enter choice")
+            hj=input("Enter choice: ")
             if(hj=='1'):
                 msg=input("Enter message to send: ")
                 msg="MSG "+user_uuid+" "+msg
                 specific_socket[group_ip_port].send(msg.encode())
+                msg_recv=specific_socket[group_ip_port].recv()
+                print(msg_recv.decode())
             elif(hj=='2'):
                 time_stamp=input("Enter time stamp or leave empty for all messages:")
                 grp_msg="QUERY "+user_uuid+" "+time_stamp
                 specific_socket[group_ip_port].send(grp_msg.encode())
-
                 msg_recv=specific_socket[group_ip_port].recv()
                 print(msg_recv)
             elif(hj=='3'):
                 break
             else:
                 print("INVALID INPUT")
-            specific_socket[group_ip_port].send(grp_msg.encode())
     elif(choice=='3'):
 
         #take group ip:port as input
